@@ -1,0 +1,54 @@
+Processes: 1083 total, 2 running, 1081 sleeping, 5490 threads 
+2026/10/13 09:45:03
+Load Avg: 1.23, 1.46, 1.81 
+CPU usage: 5.74% user, 11.20% sys, 83.4% idle 
+SharedLibs: 851M resident, 148M data, 120M linkedit.
+MemRegions: 514295 total, 11G resident, 438M private, 2733M shared.
+PhysMem: 31G used (4030M wired, 6364M compressor), 150M unused.
+VM: 517T vsize, 57G framework vsize, 0(0) swapins, 0(0) swapouts.
+Networks: packets: 7538865/6793M in, 3146038/892M out.
+Disks: 142164342/7389G read, 4916377/85G written.
+
+PID    PPID %CPU MEM   POWER #TH USER     COMMAND         
+98337  1    0.0  15M   0.0   4   root     PerfPowerService
+98311  1    0.0  2976K 0.0   2   _netbios netbiosd        
+93521  1    0.0  3088K 0.0   2   lucas    SetStoreUpdateSe
+93520  1    0.0  22M   0.0   3   lucas    com.apple.Authen
+93519  1    0.0  3200K 0.0   2   lucas    CredentialProvid
+93048  1    0.0  419M  0.0   6   lucas    VTDecoderXPCServ
+93047  1    0.0  8289K 0.0   2   lucas    VTEncoderXPCServ
+91439  1    0.0  22M   0.0   2   lucas    MTLCompilerServi
+89335  1    0.0  4801K 0.0   2   lucas    VTEncoderXPCServ
+85981  1    0.0  66M   0.0   6   lucas    com.apple.WebKit
+85749  1    0.0  3152K 0.0   2   lucas    com.apple.audio.
+85748  1    0.0  6385K 0.0   3   lucas    com.apple.WebKit
+85747  1    0.0  3185K 0.0   2   lucas    com.apple.audio.
+85746  1    0.0  48M   0.0   11  lucas    com.apple.WebKit
+85745  1    0.0  17M   0.0   7   lucas    com.apple.WebKit
+Processes: 1083 total, 2 running, 1081 sleeping, 5647 threads 
+2026/10/13 09:45:04
+Load Avg: 1.23, 1.46, 1.81 
+CPU usage: 9.20% user, 5.89% sys, 84.89% idle 
+SharedLibs: 851M resident, 148M data, 120M linkedit.
+MemRegions: 79 total, 5664K resident, 438M private, 2733M shared.
+PhysMem: 31G used (3982M wired, 6364M compressor), 144M unused.
+VM: 517T vsize, 57G framework vsize, 0(0) swapins, 0(0) swapouts.
+Networks: packets: 7538921/6793M in, 3146078/892M out.
+Disks: 142164347/7389G read, 4916384/85G written.
+
+PID    PPID  %CPU MEM    POWER #TH    USER          COMMAND         
+423    1     21.5 675M   23.7  21     _windowserver WindowServer    
+563    1     11.5 38M+   15.2  22     _coreaudiod   coreaudiod      
+15250  1306  10.0 503M+  11.0  26     lucas         Google Chrome He
+51726  51725 8.5  6496K+ 8.5   1/1    root          top             
+0      0     6.7  30M-   0.0   759/10 root          kernel_task     
+1315   1306  6.4  323M-  8.6   28     lucas         Google Chrome He
+49445  7468  5.3  215M-  5.9   23     lucas         2.1.296         
+3129   1     4.6  185M-  4.9   14     lucas         Terminal        
+590    1     2.7  3040K  2.7   6      _driverkit    com.apple.AppleU
+4610   3939  2.5  249M+  2.7   22     lucas         2.1.296         
+19628  1     2.1  297M   3.7   29     lucas         WhatsApp        
+1306   1     2.1  349M+  2.2   45     lucas         Google Chrome   
+3680   1     2.1  13M    2.1   10     root          bluetoothd      
+404    1     1.8  12M    1.8   3      root          dasd            
+93048  1     1.8  418M-  1.9   6      lucas         VTDecoderXPCServ

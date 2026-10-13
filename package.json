@@ -1,0 +1,47 @@
+{
+  "name": "underhood",
+  "version": "0.1.0",
+  "description": "See what is really eating your Mac. Live per-app CPU, memory, energy, network and disk, history of the worst offenders, and every launch agent that starts behind your back. Runs headless, view it in a browser.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "underhood": "dist/server/cli.js"
+  },
+  "engines": {
+    "node": ">=20.19"
+  },
+  "os": [
+    "darwin"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run build:server && npm run build:web",
+    "build:server": "tsc -p tsconfig.server.json",
+    "build:web": "vite build",
+    "start": "node dist/server/cli.js",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.server.json --noEmit && tsc -p tsconfig.web.json --noEmit",
+    "check": "npm run typecheck && npm test && npm run build",
+    "dev:server": "npm run build:server && node dist/server/cli.js"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "typescript": "~5.9",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cf-lucas-moskau/underhood"
+  },
+  "files": [
+    "dist",
+    "scripts",
+    "README.md"
+  ]
+}
