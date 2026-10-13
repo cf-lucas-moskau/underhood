@@ -145,3 +145,14 @@ export interface StartupItem {
   vendor: string
   group: string | null
 }
+
+/**
+ * Compact per-sample activity kept for the last few minutes so clients can
+ * smooth values and spot spikes. Entries are [cpu, power, net bytes/s];
+ * anything missing was idle in that sample.
+ */
+export interface RecentSample {
+  ts: number
+  g: Record<string, [number, number, number]>
+  p: Record<number, [number, number, number]>
+}

@@ -70,6 +70,14 @@ fi
 
 DOMAIN="gui/$(id -u)"
 launchctl bootout "$DOMAIN/$LABEL" 2>/dev/null || true
-launchctl bootstrap "$DOMAIN" "$PLIST"
-launchctl kickstart -k "$DOMAIN/$LABEL"
+# bootout returns before the job is gone; bootstrapping too early fails with "Input/output error".
+for _ in $(seq 1 50); do
+  launchctl print "$DOMAIN/$LABEL" >/dev/null 2>&1 || break
+  sleep 0.2
+done
+for attempt in 1 2 3; do
+  launchctl bootstrap "$DOMAIN" "$PLIST" 2>/dev/null && break
+  if [ "$attempt" = 3 ]; then launchctl bootstrap "$DOMAIN" "$PLIST"; fi
+  sleep 1
+done
 echo "underhood installed and running. Logs: $DATA/underhood.log"

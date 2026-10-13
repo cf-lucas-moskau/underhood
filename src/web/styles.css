@@ -194,3 +194,17 @@ table.sub th:nth-child(6) { width: 140px; }
   .brand p { font-size: 11px; }
   .toolbar input[type='search'] { width: 100%; }
 }
+
+.smoothing { display: inline-flex; align-items: center; gap: 8px; }
+.cpu-cell { display: inline-flex; align-items: center; gap: 10px; justify-content: flex-end; }
+.mini-spark { display: block; flex-shrink: 0; }
+.mini-spark polyline { stroke: var(--series-1); opacity: 0.75; }
+.mini-spark.spike polyline { stroke: var(--warning); opacity: 1; }
+.spike { color: var(--warning); font-weight: 600; }
+.peak { display: inline; }
+.peak.spike span { color: var(--warning); }
+@media (max-width: 640px) {
+  .top { flex-wrap: wrap; }
+  .smoothing > .muted { display: none; }
+}
+.badge.exited { color: var(--warning); border-color: color-mix(in srgb, var(--warning) 40%, transparent); }

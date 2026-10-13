@@ -2,7 +2,8 @@ import { spawn, execFile, type ChildProcess } from 'node:child_process'
 import { EventEmitter } from 'node:events'
 import { hostname, totalmem, uptime, cpus } from 'node:os'
 import { promisify } from 'node:util'
-import type { Group, Kind, Pressure, Proc, Snapshot, SystemPoint, SystemStats } from '../shared/types.js'
+import type { Group, Kind, Pressure, Proc, RecentSample, Snapshot, SystemPoint, SystemStats } from '../shared/types.js'
+import { compactRecent } from '../shared/recent.js'
 import { attribute, classify, displayName, type ProcInfo } from './group.js'
 import {
   parseBattery, parseDf, parseDiskStats, parseGpu, parseNettop, parseNetstat, parseVmStat, netRates, parsePs, parsePsArgs, parseSwap,
@@ -15,6 +16,7 @@ const sh = async (cmd: string, args: string[]) => (await run(cmd, args, { maxBuf
 const KIND_PRIORITY: Kind[] = ['app', 'thirdparty', 'cli', 'system']
 const PRESSURE: Record<string, Pressure> = { '1': 'normal', '2': 'warn', '4': 'critical' }
 const LIVE_POINTS = 450
+const RECENT_SAMPLES = 150
 
 /**
  * Keeps a long-running process alive and calls `onBlock` with everything it printed
@@ -52,6 +54,7 @@ function stream(cmd: string, args: string[], onBlock: (text: string) => void): (
 export class Collector extends EventEmitter {
   latest: Snapshot | null = null
   live: SystemPoint[] = []
+  recent: RecentSample[] = []
   private net: NetSample = new Map()
   private topSeen = 0
   private disk: { read: number; write: number; ts: number } | null = null
@@ -246,6 +249,8 @@ export class Collector extends EventEmitter {
         netIn: sysNetIn, netOut: sysNetOut, diskRead, diskWrite,
       })
       if (this.live.length > LIVE_POINTS) this.live.splice(0, this.live.length - LIVE_POINTS)
+      this.recent.push(compactRecent(snap))
+      if (this.recent.length > RECENT_SAMPLES) this.recent.splice(0, this.recent.length - RECENT_SAMPLES)
       this.emit('snapshot', snap)
     } catch (e) {
       console.error('underhood: sample failed', e)

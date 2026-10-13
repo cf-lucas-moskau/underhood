@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import type { Snapshot, SystemPoint } from '../shared/types'
+import type { Kind, Proc, RecentSample, Snapshot, SystemPoint } from '../shared/types'
+import { compactRecent } from '../shared/recent'
 
 export async function getJSON<T>(path: string): Promise<T> {
   const r = await fetch(path)
@@ -15,15 +16,33 @@ export async function postJSON<T>(path: string, body: unknown): Promise<T> {
 }
 
 const LIVE_POINTS = 450
+const RECENT_SAMPLES = 150
+const SEEN_MS = 120_000
+
+/** What we last knew about groups and processes, so ones that just exited can still be shown. */
+export interface Seen {
+  groups: Map<string, { kind: Kind; at: number }>
+  procs: Map<string, { proc: Proc; at: number }>
+}
 
 export function useLive() {
   const [snap, setSnap] = useState<Snapshot | null>(null)
   const [live, setLive] = useState<SystemPoint[]>([])
+  const [recent, setRecent] = useState<RecentSample[]>([])
   const [connected, setConnected] = useState(false)
   const paused = useRef(false)
+  const recentRef = useRef<RecentSample[]>([])
+  const seen = useRef<Seen>({ groups: new Map(), procs: new Map() })
 
   useEffect(() => {
     getJSON<SystemPoint[]>('/api/live').then(setLive).catch(() => {})
+    getJSON<RecentSample[]>('/api/recent')
+      .then(seed => {
+        const newest = recentRef.current[0]?.ts ?? Infinity
+        recentRef.current = [...seed.filter(x => x.ts < newest), ...recentRef.current].slice(-RECENT_SAMPLES)
+        if (!paused.current) setRecent(recentRef.current)
+      })
+      .catch(() => {})
     const es = new EventSource('/api/stream')
     es.onopen = () => setConnected(true)
     es.onerror = () => setConnected(false)
@@ -39,12 +58,22 @@ export function useLive() {
         }]
         return next.length > LIVE_POINTS ? next.slice(-LIVE_POINTS) : next
       })
-      if (!paused.current) setSnap(s)
+      const sn = seen.current
+      for (const g of s.groups) sn.groups.set(g.name, { kind: g.kind, at: s.ts })
+      for (const p of s.procs) if (p.cpu >= 0.05) sn.procs.set(String(p.pid), { proc: p, at: s.ts })
+      for (const [k, v] of sn.groups) if (v.at < s.ts - SEEN_MS) sn.groups.delete(k)
+      for (const [k, v] of sn.procs) if (v.at < s.ts - SEEN_MS) sn.procs.delete(k)
+      const r = recentRef.current
+      if (!r.length || r[r.length - 1].ts < s.ts) recentRef.current = [...r, compactRecent(s)].slice(-RECENT_SAMPLES)
+      if (!paused.current) {
+        setSnap(s)
+        setRecent(recentRef.current)
+      }
     }
     return () => es.close()
   }, [])
 
-  return { snap, live, connected, paused }
+  return { snap, live, recent, connected, paused, seen: seen.current }
 }
 
 export function usePoll<T>(path: string | null, everyMs: number): { data: T | null; error: string | null } {

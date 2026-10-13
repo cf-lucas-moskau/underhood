@@ -16,6 +16,8 @@ underhood is a small daemon plus web dashboard for macOS. It samples the system 
 
 **System tiles.** CPU, memory used (app + wired + compressed, not file cache) with memory pressure, GPU, network, disk throughput and free space, battery.
 
+**Calm numbers, visible spikes.** Every CPU, energy and network number is averaged over a window you pick (off, 10s, 30s or 1m; 30s by default) and tables re-sort at most every few seconds, so rows don't jump on each sample. Spikes stay visible: each row has a one-minute sparkline and a "Peak 1m" column, bursts well above the average (at least half a core and 2.5x the average) are flagged with ▲, and something that spiked and then exited stays listed for a minute marked "exited".
+
 Optional: quit or force-kill a process or a whole app from the UI (`--allow-kill`).
 
 ## Requirements
@@ -79,6 +81,7 @@ curl -s 'localhost:7777/api/culprits?window=24h' | jq '.[:10] | map({name, cpuSe
 | `GET /api/snapshot` | Latest sample: system stats, every process, every app group |
 | `GET /api/stream` | Server-sent events, one snapshot per interval |
 | `GET /api/live` | System series for the last 15 minutes at full resolution |
+| `GET /api/recent` | Per-group and per-process CPU, energy and network for the last 5 minutes, compact |
 | `GET /api/culprits?window=1h` | Ranking over `15m`, `1h`, `6h`, `24h`, `7d` (any `<n>m/h/d`) |
 | `GET /api/series?group=<name>&window=6h` | CPU and memory history of one group |
 | `GET /api/timeline?window=24h` | System CPU, memory, swap, pressure history |

@@ -148,6 +148,7 @@ export function startServer(opts: ServerOptions, collector: Collector, history: 
         case 'GET /api/snapshot': return collector.latest ? json(req, res, 200, collector.latest) : json(req, res, 503, { error: 'Warming up, try again in a few seconds' })
         case 'GET /api/stream': return stream(req, res)
         case 'GET /api/live': return json(req, res, 200, collector.live)
+        case 'GET /api/recent': return json(req, res, 200, collector.recent)
         case 'GET /api/culprits': return json(req, res, 200, history.culprits(win, now))
         case 'GET /api/series': return json(req, res, 200, history.series(url.searchParams.get('group') ?? '', win, now))
         case 'GET /api/timeline': return json(req, res, 200, history.timeline(win, now))
